@@ -117,12 +117,12 @@ public class OrdersController : ControllerBase
             .FirstOrDefaultAsync(o => o.Id == id);
         if(order == null)
         {
-            return NotFound();
+            return NotFound($"Order with id: {id} not found.");
         }
         _context.OrderProducts.RemoveRange(order.OrderProducts);
         _context.Orders.Remove(order);
         await _context.SaveChangesAsync();
-        return NoContent();
+        return Ok($"Order with id: {id} successfully removed.");
     }
 
     [HttpDelete("removeProductFromOrder/{oId}/{pId}")]
@@ -162,6 +162,6 @@ public class OrdersController : ControllerBase
             order.Status = dto.Status;
         }
         await _context.SaveChangesAsync();
-        return NoContent();
+        return Ok(order);
     }
 }

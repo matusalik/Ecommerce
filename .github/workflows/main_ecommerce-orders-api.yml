@@ -27,7 +27,7 @@ jobs:
         run: dotnet build Ecommerce.Orders.Api/Ecommerce.Orders.Api.csproj --configuration Release
 
       - name: dotnet publish
-        run: dotnet publish -c Ecommerce.Orders.Api/Ecommerce.Orders.Api.csproj Release -o "${{env.DOTNET_ROOT}}/myapp"
+        run: dotnet publish Ecommerce.Orders.Api/Ecommerce.Orders.Api.csproj -c Release -o "${{env.DOTNET_ROOT}}/myapp"
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4

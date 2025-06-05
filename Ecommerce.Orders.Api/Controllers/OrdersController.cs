@@ -81,8 +81,8 @@ public class OrdersController : ControllerBase
         return CreatedAtAction(nameof(GetAllAsync), new {id = order.Id}, order);
     }
 
-    [HttpPost("addProductToOrder/{oId}")]
-    public async Task<IActionResult> AddProductToOrder(int oId, [FromBody] AddProductToOrderDTO dto)
+    [HttpPost("addProductToOrder/{oId}/{pId}")]
+    public async Task<IActionResult> AddProductToOrder(int oId, int pId)
     {
         var order = await _context.Orders
             .Include(o => o.OrderProducts)
@@ -91,20 +91,28 @@ public class OrdersController : ControllerBase
         {
             return NotFound($"Order with id {oId} not found.");
         }
-        var product = await _context.Products.FindAsync(dto.ProductId);
+        var product = await _context.Products.FindAsync(pId);
         if(product == null)
         {
-            return NotFound($"Product with id {oId} not found.");
+            return NotFound($"Product with id {pId} not found.");
         }
-        var orderProduct = new OrderProduct
+        var existingOrderProduct = order.OrderProducts.FirstOrDefault(op => op.ProductId == pId);
+        if(existingOrderProduct != null)
         {
-            OrderId = oId,
-            ProductId = dto.ProductId,
-            Quantity = dto.Quantity
-        };
-        _context.Add(orderProduct);
+            existingOrderProduct.Quantity++;
+        }
+        else
+        {
+            var orderProduct = new OrderProduct
+            {
+                OrderId = oId,
+                ProductId = pId,
+                Quantity = 1
+            };
+            _context.OrderProducts.Add(orderProduct);
+        }
         await _context.SaveChangesAsync();
-        return NoContent();
+        return Ok("Product added successfully to order.");
     }
 
     /*------------DELETE--------------*/

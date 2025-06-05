@@ -81,8 +81,8 @@ public class OrdersController : ControllerBase
         return CreatedAtAction(nameof(GetAllAsync), new {id = order.Id}, order);
     }
 
-    [HttpPost("addProductToOrder/{oId}/{pId}")]
-    public async Task<IActionResult> AddProductToOrder(int oId, int pId)
+    [HttpPost("addProductToOrder")]
+    public async Task<IActionResult> AddProductToOrder([FromQuery]int oId, [FromQuery]int pId)
     {
         var order = await _context.Orders
             .Include(o => o.OrderProducts)
@@ -133,8 +133,8 @@ public class OrdersController : ControllerBase
         return Ok($"Order with id: {id} successfully removed.");
     }
 
-    [HttpDelete("removeProductFromOrder/{oId}/{pId}")]
-    public async Task<IActionResult> RemoveProductFormOrder(int oId, int pId)
+    [HttpDelete("removeProductFromOrder")]
+    public async Task<IActionResult> RemoveProductFormOrder([FromQuery] int oId, [FromQuery] int pId)
     {
         var orderProduct = await _context.Set<OrderProduct>()
             .FirstOrDefaultAsync(op => op.OrderId == oId && op.ProductId == pId);

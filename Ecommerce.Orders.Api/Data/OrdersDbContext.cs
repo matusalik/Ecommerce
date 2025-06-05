@@ -25,5 +25,9 @@ public class OrdersDbContext : DbContext
             .HasOne(op => op.Product)
             .WithMany(p => p.OrderProducts)
             .HasForeignKey(op => op.ProductId);
+
+        modelBuilder.Entity<Product>()
+        .Property(p => p.Price)
+        .HasPrecision(18, 2);
     }
 }
